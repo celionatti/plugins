@@ -6,6 +6,7 @@ class App
 {
     public function index()
     {
-        echo "Everything is working";
+        echo "<pre>";
+        print_r(URL());
     }
 }
