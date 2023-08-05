@@ -1,0 +1,12 @@
+{
+    "name":"Home Page",
+    "id":"home-page",
+    "author":"celionatti",
+    "thumbnail":"",
+    "active":true,
+    "index":1,
+    "routes": {
+        "on":["home"],
+        "off":[]
+    }
+}
