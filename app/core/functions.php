@@ -97,19 +97,18 @@ function load_plugins(array $plugins_folders): bool
 function valid_route(object $json): bool
 {
     if (!empty($json->routes->off) && is_array($json->routes->off)) {
-        if (in_array(page(), $json->routes->off)) {
+        if (in_array(page(), $json->routes->off))
             return false;
-        }
     }
 
     if (!empty($json->routes->on) && is_array($json->routes->on)) {
-        if ($json->routes->on[0] == "all") {
+        if ($json->routes->on[0] == "all")
             return true;
-        }
-        if (in_array(page(), $json->routes->on)) {
+
+        if (in_array(page(), $json->routes->on))
             return true;
-        }
     }
+
     return false;
 }
 
