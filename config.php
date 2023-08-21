@@ -1,6 +1,6 @@
 <?php
 
-const ROOT = "http://localhost:1234";
+const ROOT = "http://plugins.test";
 
 define('DEBUG', true);
 

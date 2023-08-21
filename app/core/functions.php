@@ -97,19 +97,18 @@ function load_plugins(array $plugins_folders): bool
 function valid_route(object $json): bool
 {
     if (!empty($json->routes->off) && is_array($json->routes->off)) {
-        if (in_array(page(), $json->routes->off)) {
+        if (in_array(page(), $json->routes->off))
             return false;
-        }
     }
 
     if (!empty($json->routes->on) && is_array($json->routes->on)) {
-        if ($json->routes->on[0] == "all") {
+        if ($json->routes->on[0] == "all")
             return true;
-        }
-        if (in_array(page(), $json->routes->on)) {
+
+        if (in_array(page(), $json->routes->on))
             return true;
-        }
     }
+
     return false;
 }
 
@@ -161,4 +160,37 @@ function redirect($url)
 {
     header("Location: " . ROOT . '/' . $url);
     die;
+}
+
+function plugin_dir()
+{
+    $called_from = debug_backtrace();
+
+    $key = array_search(__FUNCTION__, array_column($called_from, 'function'));
+
+    return get_plugins_dir(debug_backtrace()[$key]['file']);
+}
+
+function plugin_http_dir()
+{
+    $called_from = debug_backtrace();
+
+    $key = array_search(__FUNCTION__, array_column($called_from, 'function'));
+
+    return ROOT . DIRECTORY_SEPARATOR . get_plugins_dir(debug_backtrace()[$key]['file']);
+}
+
+function get_plugins_dir(string $filepath): string
+{
+    $path = "";
+    
+    $basename = basename($filepath);
+    $path = str_replace($basename, "", $filepath);
+
+    if(strstr($path, DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR)) {
+        $parts = explode(DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR, $path);
+        $path = $parts[1];
+        $path = 'plugins' . DIRECTORY_SEPARATOR . $parts[1];
+    }
+    return $path;
 }
