@@ -160,6 +160,7 @@ function redirect($url)
 {
     header("Location: " . ROOT . '/' . $url);
     die;
+<<<<<<< HEAD
 }
 
 function plugin_dir()
@@ -193,4 +194,6 @@ function get_plugins_dir(string $filepath): string
         $path = 'plugins' . DIRECTORY_SEPARATOR . $parts[1];
     }
     return $path;
+=======
+>>>>>>> f3db9ad8ae944d495f5917b7ce8ec2082be4adfc
 }
