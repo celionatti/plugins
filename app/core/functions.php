@@ -1,5 +1,23 @@
 <?php
 
+function APP($key = "")
+{
+    global $APP;
+
+    if(!empty($key)) {
+        return !empty($APP[$key]) ? $APP[$key] : null;
+    }
+
+    return $APP;
+}
+
+function show_plugins()
+{
+    global $APP;
+
+    return APP('plugins');
+}
+
 /**
  * Split URL
  *

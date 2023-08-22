@@ -1,7 +1,5 @@
 <?php
 
-$user = new User();
-
 add_action('controller', function() {
     dd($_POST);
 });
