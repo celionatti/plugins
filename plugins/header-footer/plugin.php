@@ -1,7 +1,8 @@
 <?php
 
 add_action('controller', function() {
-    dd($_POST);
+    $arr = ['name'=>'mary','age'=>29];
+    set_value($arr);
 });
 
 add_action('after_view', function() {
@@ -9,12 +10,7 @@ add_action('after_view', function() {
 });
 
 add_action('view', function() {
-    echo "<center><form style='width:400px;margin:auto;text-align:center;margin-top:15px;' method='post'>
-    <h4>Login</h4>
-    <input type='email' name='email' placeholder='E-mail'/><br>
-    <input type='password' name='password' placeholder='Password'/><br><br>
-    <button>Login</button>
-    </form></center>";
+    dd(get_value());
 });
 
 add_action('before_view', function() {

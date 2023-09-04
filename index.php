@@ -21,6 +21,8 @@ DEBUG ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
 
 $ACTIONS = [];
 $FILTERS = [];
+$APP = [];
+$USER_DATA = [];
 $APP['URL'] = split_url($_GET['url'] ?? 'home');
 
 /**

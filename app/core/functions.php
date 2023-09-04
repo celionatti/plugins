@@ -1,10 +1,58 @@
 <?php
 
+function set_value(string|array $key, mixed $value = ''): bool
+{
+    global $USER_DATA;
+
+    $called_from = debug_backtrace();
+
+    $ikey = array_search(__FUNCTION__, array_column($called_from, 'function'));
+
+    $path = get_plugins_dir(debug_backtrace()[$ikey]['file']) . 'config.json';
+
+    if (file_exists($path)) {
+        $json = json_decode(file_get_contents($path));
+        $plugin_id = $json->id;
+        if (is_array($key)) {
+            foreach ($key as $k => $value) {
+                $USER_DATA[$plugin_id][$k] = $value;
+            }
+        } else {
+            $USER_DATA[$plugin_id][$key] = $value;
+        }
+        return true;
+    }
+
+    return false;
+}
+
+function get_value(string $key = ''): mixed
+{
+    global $USER_DATA;
+
+    $called_from = debug_backtrace();
+
+    $ikey = array_search(__FUNCTION__, array_column($called_from, 'function'));
+
+    $path = get_plugins_dir(debug_backtrace()[$ikey]['file']) . 'config.json';
+
+    if (file_exists($path)) {
+        $json = json_decode(file_get_contents($path));
+        $plugin_id = $json->id;
+
+        if (empty($key))
+            return $USER_DATA[$plugin_id];
+
+        return !empty($USER_DATA[$plugin_id][$key]) ? $USER_DATA[$plugin_id][$key] : null;
+    }
+    return null;
+}
+
 function APP($key = "")
 {
     global $APP;
 
-    if(!empty($key)) {
+    if (!empty($key)) {
         return !empty($APP[$key]) ? $APP[$key] : null;
     }
 
@@ -15,7 +63,9 @@ function show_plugins()
 {
     global $APP;
 
-    return APP('plugins');
+    $names = array_column($APP['plugins'], 'name');
+
+    dd($names ?? []);
 }
 
 /**
@@ -158,8 +208,9 @@ function add_filter()
 {
 }
 
-function do_filter()
+function do_filter(string $hook, mixed $data = ""):mixed
 {
+    return $data;
 }
 
 function dd($data)
@@ -201,11 +252,11 @@ function plugin_http_dir()
 function get_plugins_dir(string $filepath): string
 {
     $path = "";
-    
+
     $basename = basename($filepath);
     $path = str_replace($basename, "", $filepath);
 
-    if(strstr($path, DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR)) {
+    if (strstr($path, DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR)) {
         $parts = explode(DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR, $path);
         $path = $parts[1];
         $path = 'plugins' . DIRECTORY_SEPARATOR . $parts[1];
