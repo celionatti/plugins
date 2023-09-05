@@ -1,6 +1,5 @@
 <?php
 
-
 add_action('view', function() {
 
 });

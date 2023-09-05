@@ -13,7 +13,7 @@ spl_autoload_register(function ($classname) {
 
         $key = array_search(__FUNCTION__, array_column($called_from, 'function'));
 
-        $path = get_plugins_dir(debug_backtrace()[$key]['file']) . 'models' . DIRECTORY_SEPARATOR . ucfirst($classname . '.php');
+        $path = get_plugin_dir(debug_backtrace()[$key]['file']) . 'models' . DIRECTORY_SEPARATOR . ucfirst($classname . '.php');
 
         if (file_exists($path)) {
             require_once $path;
@@ -22,6 +22,7 @@ spl_autoload_register(function ($classname) {
 });
 
 require 'functions.php';
+require 'extensions.php';
 require 'Database.php';
 require 'Model.php';
 require 'App.php';
