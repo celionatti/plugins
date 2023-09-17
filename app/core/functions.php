@@ -494,4 +494,3 @@ function message(string $msg = '', bool $erase = false):?string
 
 	return '';
 }
-

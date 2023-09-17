@@ -1,8 +1,8 @@
 {
-	"name":"Home Page",
-	"id":"home-page",
-	"author":"celio natti",
-	"author website":"www.nattination.com.ng",
+	"name":"New Plugin",
+	"id":"new-plugin",
+	"author":"",
+	"author website":"",
 	"thumbnail":"thumbnail.jpg",
 	"active":true,
 	"index":1,

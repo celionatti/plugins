@@ -1,116 +1,133 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Model;
-
 use Core\Database;
 
-defined("ROOT") or dd("Direct script access denied");
+defined('ROOT') or die("Direct script access denied");
 
+/**
+ * Model class
+ */
 class Model extends Database
 {
-    public $order           = "desc";
-    public $order_column    = "id";
-    public $primary_key     = "id";
+	
+	public $order 			= 'desc';
+	public $order_column 	= 'id';
+	public $primary_key 	= 'id';
 
-    public $limit           = 10;
-    public $offset          = 0;
-    public $errors          = [];
+	public $limit 			= 10;
+	public $offset 			= 0;
+	public $errors 			= [];
 
-    public function where(array $in_array = [], array $not_in_array, string $data_type = "object"): array|bool
-    {
-        $query = "SELECT * FROM $this->table WHERE ";
+	public function where(array $where_array = [], array $where_not_array = [], string $data_type = 'object'):array|bool
+	{
 
-        if (!empty($in_array)) {
-            foreach ($in_array as $key => $value) {
-                $query .= $key . "= :" . $key . "&& ";
-            }
-        }
+		$query = "select * from $this->table where ";
 
-        if (!empty($not_in_array)) {
-            foreach ($not_in_array as $key => $value) {
-                $query .= $key . "!= :" . $key . "&& ";
-            }
-        }
+		if(!empty($where_array))
+		{
+			foreach ($where_array as $key => $value) {
+				$query .= $key . '= :'.$key . ' && ';
+			}
+		}
+	
+		if(!empty($where_not_array))
+		{
+			foreach ($where_not_array as $key => $value) {
+				$query .= $key . ' != :'.$key . ' && ';
+			}
+		}
 
-        $query = trim($query, " && ");
-        $query .= " ORDER BY $this->order_column $this->order LIMIT $limit offset $offset";
+		$query = trim($query,' && ');
+		$query .= " order by $this->order_column $this->order limit $this->limit offset $this->offset";
 
-        $data = array_merge($in_array, $not_in_array);
+		$data = array_merge($where_array,$where_not_array);
 
-        return $this->query($query, $data);
-    }
+		return $this->query($query,$data);
+		
+	}
 
-    public function first(array $in_array = [], array $not_in_array, string $data_type = "object"): array|bool
-    {
-        $rows = $this->where($in_array, $not_in_array, $data_type);
+	public function first(array $where_array = [], array $where_not_array = [], string $data_type = 'object'):object|bool
+	{
 
-        if (!empty($rows)) {
-            return $rows[0];
-        }
+		$rows = $this->where($where_array, $where_not_array,$data_type);
+		if(!empty($rows))
+			return $rows[0];
 
-        return false;
-    }
+		return false;
+	}
 
-    public function getAll(string $data_type = "object"): array|bool
-    {
-        $query = "SELECT * FROM $this->table ORDER BY $this->order_column $this->order LIMIT $limit offset $offset";
+	public function getAll(string $data_type = 'object'):array|bool
+	{
 
-        return $this->query($query, [], $data_type);
-    }
+		$query = "select * from $this->table order by $this->order_column $this->order limit $limit offset $offset";
+		return $this->query($query,[],$data_type);
+	}
 
-    public function insert(array $data)
-    {
-        if(!empty($this->allowedInsertColumns)) {
-            foreach($data as $key => $value) {
-                if(!in_array($key, $this->allowedInsertColumns)) {
-                    unset($data[$key]);
-                }
-            }
-        }
+	public function insert(array $data)
+	{
+		if(!empty($this->allowedColumns))
+		{
+			foreach ($data as $key => $value) {
+				if(!in_array($key, $this->allowedColumns))
+				{
+					unset($data[$key]);
+				}
+			}
+		}
 
-        if (!empty($data)) {
-            $keys = array_keys($data);
+		if(!empty($data))
+		{
+			$keys = array_keys($data);
 
-            $query = "INSERT INTO $this->table (".implode(",", $keys).") VALUES (:".implode(",:", $keys).")";
-            return $this->query($query,$data);
-        }
-        return false;
-    }
+			$query = "insert into $this->table (".implode(",", $keys).") values (:".implode(",:", $keys).")";
+			return $this->query($query,$data);
+		}
 
-    public function update(string|int $v_id, array $data)
-    {
-        if(!empty($this->allowedUpdateColumns)) {
-            foreach($data as $key => $value) {
-                if(!in_array($key, $this->allowedUpdateColumns)) {
-                    unset($data[$key]);
-                }
-            }
-        }
-        
-        if (!empty($data)) {
-            $query = "UPDATE $this->table SET ";
+		return false;
+	}
 
-            foreach($data as $key => $value) {
-                $query .= $key . "= :" . $key . ",";
-            }
+	public function update(string|int $my_id, array $data)
+	{
+		if(!empty($this->allowedUpdateColumns) || !empty($this->allowedColumns))
+		{
+			$this->allowedUpdateColumns = empty($this->allowedUpdateColumns) ? $this->allowedColumns : $this->allowedUpdateColumns;
+			foreach ($data as $key => $value) {
+				if(!in_array($key, $this->allowedUpdateColumns))
+				{
+					unset($data[$key]);
+				}
+			}
+		}
+		
+		if(!empty($data))
+		{
+			$query = "update $this->table ";
+			foreach ($data as $key => $value) {
 
-            $query = trim($query, ",");
-            $data["v_id"] = $_v_id;
-            $query .= "WHERE $this->primary_key = :v_id";
+				$query .= $key . '= :'.$key.",";
+			}
 
-            return $this->query($query,$data);
-        }
-        return false;
-    }
+			$query = trim($query,",");
+			$data['my_id'] = $_my_id;
 
-    public function delete(string|int $v_id)
-    {   
-        $query = "DELETE FROM $this->table ";
+			$query .= " where $this->primary_key = :my_id";
+			return $this->query($query,$data);
+		}
 
-        $query .= "WHERE $this->primary_key = :v_id LIMIT 1";
+		return false;
+	}
 
-        return $this->query($query);
-    }
+	public function delete(string|int $my_id)
+	{
+ 
+		$query = "delete from $this->table ";
+		$query .= " where $this->primary_key = :my_id limit 1";
+		
+		return $this->query($query,$data);
+
+	}
+
+
 }
+
