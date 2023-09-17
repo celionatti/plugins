@@ -1,13 +1,13 @@
 {
-	"name":"Page Not Found",
-	"id":"404",
+	"name":"Header Footer",
+	"id":"header-footer",
 	"author":"celio natti",
 	"author website":"www.nattination.com.ng",
 	"thumbnail":"thumbnail.jpg",
 	"active":true,
 	"index":1,
 	"routes": {
-		"on":["404"],
+		"on":["all"],
 		"off":[]
 	},
 	"dependencies": {

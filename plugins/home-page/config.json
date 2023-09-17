@@ -7,7 +7,7 @@
 	"active":true,
 	"index":1,
 	"routes": {
-		"on":["all"],
+		"on":["home"],
 		"off":[]
 	},
 	"dependencies": {
