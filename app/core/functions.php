@@ -129,7 +129,8 @@ function load_plugins($plugin_folders)
 {
 	global $APP;
 	$loaded = false;
-	
+	$dependencies = [];
+
 	foreach ($plugin_folders as $folder) {
 		
 		$file = 'plugins/' . $folder . '/config.json';
@@ -145,6 +146,8 @@ function load_plugins($plugin_folders)
 					if(file_exists($file) && valid_route($json))
 					{
 						$json->index = $json->index ?? 1;
+						$json->version = $json->version ?? "1.0.0";
+						$json->dependencies = $json->dependencies ?? (object)[];
 						$json->index_file = $file;
 						$json->path = 'plugins/' . $folder . '/';
 						$json->http_path = ROOT . '/' . $json->path;
@@ -162,6 +165,30 @@ function load_plugins($plugin_folders)
 		$APP['plugins'] = sort_plugins($APP['plugins']);
 		foreach ($APP['plugins'] as $json)
 		{
+			/** check for plugin dependencies **/
+			if(!empty((array)$json->dependencies))
+			{
+				foreach ((array)$json->dependencies as $plugin_id => $version) {
+					
+					if($plugin_data = plugin_exists($plugin_id))
+					{
+						$required_version = (int)str_replace(".", "", $version);
+						$existing_version = (int)str_replace(".", "", $plugin_data->version);
+						if($existing_version < $required_version)
+						{
+							dd("Missing plugin dependency: ". $plugin_id . " version: ".$version.", Requested by plugin: ". $json->id);
+							die;
+						}
+					}else
+					{
+						dd("Missing plugin dependency: ". $plugin_id . " version: ".$version.", Requested by plugin: ". $json->id);
+						die;
+					}
+				}
+
+			}
+
+			/** load plugin file **/
 			if(file_exists($json->index_file))
 			{
 				require_once $json->index_file;
@@ -171,6 +198,19 @@ function load_plugins($plugin_folders)
 	}
 
 	return $loaded;
+}
+
+function plugin_exists(string $plugin_id):bool|object 
+{
+	global $APP;
+	$ids = array_column($APP['plugins'], 'id');
+	$key = array_search($plugin_id, $ids);
+	if($key !== false)
+	{
+		return $APP['plugins'][$key];
+	}
+
+	return false;
 }
 
 function sort_plugins(array $plugins):array
@@ -349,7 +389,10 @@ function user_can(?string $permission):bool
 	if(empty($APP['user_permissions']))
 		$APP['user_permissions'] = [];
 
-	$APP['user_permissions'] = do_filter('before_check_permissions',$APP['user_permissions']);
+	$APP['user_permissions'] = do_filter('user_permissions',$APP['user_permissions']);
+	
+	if(in_array('all', $APP['user_permissions']))
+		return true;
 	
 	if(in_array($permission, $APP['user_permissions']))
 		return true;
@@ -426,11 +469,14 @@ function csrf(string $sesKey = 'csrf', int $hours = 1):string
 
 function csrf_verify(array $post, string $sesKey = 'csrf'):mixed
 {
+	
 	if(empty($post[$sesKey]))
 		return false;
 
 	$ses = new \Core\Session;
 	$data = $ses->get($sesKey);
+
+
 	if(is_array($data))
 	{
 		if($data['key'] !== $post[$sesKey])
@@ -447,8 +493,10 @@ function csrf_verify(array $post, string $sesKey = 'csrf'):mixed
 }
 
 
-function get_image(string $path = '', string $type = 'post')
+function get_image(?string $path = '', string $type = 'post')
 {
+	$path = $path ?? '';
+
 	if(file_exists($path))
 		return ROOT . '/' . $path;
 	
@@ -469,28 +517,52 @@ function esc(?string $str):?string
 	return htmlspecialchars($str);
 }
 
-function get_date(string $date):string
+function get_date(?string $date):string
 {
+	$date = $date ?? '';
 	return date("jS M, Y", strtotime($date));
 }
 
-function message(string $msg = '', bool $erase = false):?string
+function message_success(string $msg = '', bool $erase = false):?string
 {
 	$ses = new \Core\Session;
 
 	if(!empty($msg))
 	{
-		$ses->set('message',$msg);
+		$ses->set('message_success',$msg);
 	}else
-	if(!empty($ses->get('message')))
+	if(!empty($ses->get('message_success')))
 	{
-		$msg = $ses->get('message');
+		$msg = $ses->get('message_success');
 
 		if($erase)
-			$ses->pop('message');
+			$ses->pop('message_success');
 
 		return $msg;
 	}
 
 	return '';
 }
+
+
+function message_fail(string $msg = '', bool $erase = false):?string
+{
+	$ses = new \Core\Session;
+
+	if(!empty($msg))
+	{
+		$ses->set('message_fail',$msg);
+	}else
+	if(!empty($ses->get('message_fail')))
+	{
+		$msg = $ses->get('message_fail');
+
+		if($erase)
+			$ses->pop('message_fail');
+
+		return $msg;
+	}
+
+	return '';
+}
+

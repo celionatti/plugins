@@ -1,0 +1,17 @@
+{
+	"name":"Basic Authentication",
+	"id":"basic-auth",
+	"author":"celio natti",
+	"author website":"www.nattination.com.ng",
+	"thumbnail":"thumbnail.jpg",
+	"active":true,
+	"index":1,
+	"routes": {
+		"on":["login", "signup"],
+		"off":[]
+	},
+	"dependencies": {
+
+	}
+
+}
