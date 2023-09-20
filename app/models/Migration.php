@@ -46,7 +46,7 @@ class Migration extends Database
 
 			$query = trim($query,",");
 
-			$query .= ")ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4";
+			$query .= ")ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4";
 
 			$this->query($query);
 
