@@ -34,10 +34,10 @@
 		  <label for="floatingPassword">Password</label>
 		</div>
 
-		<!-- <div class="px-2 d-flex justify-content-between">
+		<div class="px-2 d-flex justify-content-between">
 			<a href="<?=ROOT?>/<?=$vars['forgot_page']?>">Forgot password?</a>
 			<a href="<?=ROOT?>/<?=$vars['signup_page']?>">or Signup</a>
-		</div> -->
+		</div>
 		<button class="btn text-white px-4 py-3 w-100 my-4" style="border-radius: 40px;background-color: #3d4785">Login</button>
 	</form>
 

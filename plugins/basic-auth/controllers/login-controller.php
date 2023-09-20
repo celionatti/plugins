@@ -1,5 +1,27 @@
 <?php
 
-/**put the controller code for your plugin here**/
+use BasicAuth\User;
+use Core\Session;
 
-dd($req->post());
+	$user = new User;
+    $ses = new Session;
+
+	if(csrf_verify($req->post()))
+	{
+		$postdata = $req->post();
+		$row = $user->first(['email'=>$postdata['email']]);
+		
+		if($row)
+		{
+			if(password_verify($postdata['password'], $row->password))
+			{
+				$ses->auth($row);
+				redirect('home');
+			}
+		}
+
+		message_fail('Wrong email or password');
+	}else
+	{
+		message_fail('Form expired! Please refresh');
+	}

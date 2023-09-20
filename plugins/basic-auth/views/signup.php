@@ -59,10 +59,10 @@
 		  <label for="floatingPassword">Retype Password</label>
 		</div>
 
-		<!-- <div class="px-2 d-flex justify-content-between">
+		<div class="px-2 d-flex justify-content-between">
 			<a href="<?=ROOT?>/<?=$vars['forgot_page']?>">Forgot password?</a>
 			<a href="<?=ROOT?>/<?=$vars['login_page']?>">or Login</a>
-		</div> -->
+		</div>
 		<button class="btn text-white px-4 py-3 w-100 my-4" style="border-radius: 40px;background-color: #3d4785">Signup</button>
 	</form>
 
