@@ -1,5 +1,6 @@
 {
 	"name":"Header Footer",
+	"version":"1.0.0",
 	"id":"header-footer",
 	"author":"celio natti",
 	"author website":"www.nattination.com.ng",
@@ -8,7 +9,7 @@
 	"index":3,
 	"routes": {
 		"on":["all"],
-		"off":[]
+		"off":["admin"]
 	},
 	"dependencies": {
 

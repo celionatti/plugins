@@ -1,18 +1,18 @@
 {
-	"name":"Home Page",
+	"name":"Users Manager",
 	"version":"1.0.0",
-	"id":"home-page",
+	"id":"users-manager",
 	"author":"celio natti",
-	"author website":"www.nattination.com.ng",
+	"author website":"",
 	"thumbnail":"thumbnail.jpg",
 	"active":true,
 	"index":3,
 	"routes": {
-		"on":["home"],
+		"on":["admin"],
 		"off":[]
 	},
 	"dependencies": {
-
+		"basic-auth":"1.0.0"
 	}
 
 }
