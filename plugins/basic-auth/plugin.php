@@ -13,8 +13,14 @@ set_value([
 	'signup_page'	=>'signup',
 	'forgot_page'	=>'forgot',
 	'logout_page'	=>'logout',
-	'tables'			=> [
-
+	'admin_plugin_route'	=>'admin',
+	'tables'		=> [
+		'users_table' => 'users'
+	],
+	'optional_tables'		=>[
+		'roles_table' 		=> 'user_roles',
+		'permissions_table' => 'role_permissions',
+		'roles_map_table' 	=> 'user_roles_map',
 	],
 
 ]);
@@ -62,13 +68,13 @@ add_filter('header-footer_before_menu_links',function($links){
     $link->permission  = 'not_logged_in';
     $links[] = $link;
 
-    // $link        = (object)[];
-    // $link->id    = 2;
-    // $link->title = 'Admin';
-    // $link->slug  = $vars['admin_plugin_route'];
-    // $link->icon  = '';
-    // $link->permission  = 'logged_in';
-    // $links[] = $link;
+    $link        = (object)[];
+    $link->id    = 2;
+    $link->title = 'Admin';
+    $link->slug  = $vars['admin_plugin_route'];
+    $link->icon  = '';
+    $link->permission  = 'logged_in';
+    $links[] = $link;
 
     $link        = (object)[];
     $link->id    = 3;
@@ -79,7 +85,7 @@ add_filter('header-footer_before_menu_links',function($links){
     $links[] = $link;
 
     $link        = (object)[];
-    $link->id    = 0;
+    $link->id    = 4;
     $link->title = 'Hi, ' . $ses->user('first_name');
     $link->slug  = 'profile/'. $ses->user('id');
     $link->icon  = '';
