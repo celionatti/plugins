@@ -1,7 +1,7 @@
 <?php
 
 namespace Model;
-use Core\Database;
+use \Core\Database;
 
 defined('ROOT') or die("Direct script access denied");
 
@@ -60,7 +60,7 @@ class Model extends Database
 	public function getAll(string $data_type = 'object'):array|bool
 	{
 
-		$query = "select * from $this->table order by $this->order_column $this->order limit $limit offset $offset";
+		$query = "select * from $this->table order by $this->order_column $this->order limit $this->limit offset $this->offset";
 		return $this->query($query,[],$data_type);
 	}
 
@@ -87,7 +87,7 @@ class Model extends Database
 		return false;
 	}
 
-	public function update(string|int $my_id, array $data)
+	public function update(string|int $_my_id, array $data)
 	{
 		if(!empty($this->allowedUpdateColumns) || !empty($this->allowedColumns))
 		{
@@ -102,7 +102,7 @@ class Model extends Database
 		
 		if(!empty($data))
 		{
-			$query = "update $this->table ";
+			$query = "update $this->table set ";
 			foreach ($data as $key => $value) {
 
 				$query .= $key . '= :'.$key.",";
@@ -112,18 +112,20 @@ class Model extends Database
 			$data['my_id'] = $_my_id;
 
 			$query .= " where $this->primary_key = :my_id";
+
 			return $this->query($query,$data);
 		}
 
 		return false;
 	}
 
-	public function delete(string|int $my_id)
+	public function delete(string|int $_my_id)
 	{
  
 		$query = "delete from $this->table ";
-		$query .= " where $this->primary_key = :my_id limit 1";
+		$query .= " where $this->primary_key = :_my_id limit 1";
 		
+		$data['_my_id'] = $_my_id;
 		return $this->query($query,$data);
 
 	}

@@ -63,7 +63,7 @@ class Pager
 		<?php
 	}
 
-	public function displayTailwind()
+	public function displayTailwind():string
 	{
 		?>
 		<nav aria-label="Page navigation example">
@@ -82,7 +82,7 @@ class Pager
 		<?php
 	}
 
-	public function displayCustom()
+	public function displayCustom():string
 	{
 		?>
 		<nav aria-label="Page navigation example">

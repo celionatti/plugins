@@ -2,29 +2,41 @@
 
 /**
  * Plugin name: Users Manager
- * Description: A way for admin to manage Users.
+ * Description: A way for admin to manage users
  * 
  * 
  **/
 
 set_value([
 
-	'admin_route'	=> 'admin',
-	'plugin_route'	=> 'users',
-	'tables'		=> [
+	'admin_route'	=>'admin',
+	'plugin_route'	=>'users',
+	'tables'		=>[
 		'users_table' 		=> 'users',
 	],
 
-	'optional_tables'		=> [
+	'optional_tables'		=>[
 		'roles_table' 		=> 'user_roles',
 		'permissions_table' => 'role_permissions',
 		'roles_map_table' 	=> 'user_roles_map',
 	],
+	
 
 ]);
 
+
+/** check if all tables exist **/
+$db = new \Core\Database;
+$tables = get_value()['tables'];
+
+if(!$db->table_exists($tables)){
+	dd("Missing database tables in ".plugin_id() ." plugin: ". implode(",", $db->missing_tables));
+	die;
+}
+
+
 /** set user permissions for this plugin **/
-add_filter('permissions', function ($permissions) {
+add_filter('permissions',function($permissions){
 
 	$permissions[] = 'all';
 	$permissions[] = 'view_users';
@@ -38,7 +50,7 @@ add_filter('permissions', function ($permissions) {
 
 
 /** add to amin links **/
-add_filter('basic-admin_before_admin_links', function ($links) {
+add_filter('basic-admin_before_admin_links',function($links){
 
 	if(user_can('view_users'))
 	{
@@ -57,33 +69,35 @@ add_filter('basic-admin_before_admin_links', function ($links) {
 
 
 /** run this after a form submit **/
-add_action('controller', function () {
+add_action('controller',function(){
 
 	$req = new \Core\Request;
 	$vars = get_value();
-
+	
 	$admin_route = $vars['admin_route'];
 	$plugin_route = $vars['plugin_route'];
 
-	if (URL(1) == $vars['plugin_route'] && $req->posted()) {
+	if(URL(1) == $vars['plugin_route'] && $req->posted())
+	{
 		$ses = new \Core\Session;
-		// $user = new \UsersManager\User;
+		$user = new \UsersManager\User;
 
 		$id = URL(3) ?? null;
-		if ($id)
-			// $row = $user->first(['id'=>$id]);
+		if($id)
+			$row = $user->first(['id'=>$id]);
 
-			if (URL(2) == 'add') {
-				require plugin_path('controllers/add-controller.php');
-			} else
-		if (URL(2) == 'edit') {
+		if(URL(2) == 'add'){
+			require plugin_path('controllers/add-controller.php');
+		}else
+		if(URL(2) == 'edit'){
+			
+			require plugin_path('controllers/edit-controller.php');
+		}else
+		if(URL(2) == 'delete'){
 
-				require plugin_path('controllers/edit-controller.php');
-			} else
-		if (URL(2) == 'delete') {
+			require plugin_path('controllers/delete-controller.php');
+		}
 
-				require plugin_path('controllers/delete-controller.php');
-			}
 	}
 });
 
@@ -109,12 +123,12 @@ add_action('basic-admin_main_content',function(){
 
 		if(URL(2) == 'add'){
 
-			// $user_role = new \UsersManager\User_role;
+			$user_role = new \UsersManager\User_role;
 			require plugin_path('views/add.php');
 		}else
 		if(URL(2) == 'edit'){
 			
-			// $user_role = new \UsersManager\User_role;
+			$user_role = new \UsersManager\User_role;
 			require plugin_path('views/edit.php');
 		}else
 		if(URL(2) == 'delete'){
@@ -127,7 +141,7 @@ add_action('basic-admin_main_content',function(){
 		}else
 		{
 			$user->limit = 30;
-			// $user::$query_id = 'get-users';
+			$user::$query_id = 'get-users';
 			$rows = $user->getAll();
 			require plugin_path('views/list.php');
 		}
@@ -137,14 +151,25 @@ add_action('basic-admin_main_content',function(){
 
 
 /** for manipulating data after a query operation **/
-add_filter('after_query', function ($data) {
+add_filter('after_query',function($data){
 
-
-	if (empty($data['result']))
+	
+	if(empty($data['result']))
 		return $data;
 
-	foreach ($data['result'] as $key => $row) {
+	if($data['query_id'] == 'get-users')
+	{
+		$role_map = new \UsersManager\User_roles_map;
+		foreach ($data['result'] as $key => $row) {
+			
+			$query = "select * from user_roles where disabled = 0 && id in (select role_id from user_roles_map where disabled = 0 && user_id = :user_id)";
+			$roles = $role_map->query($query,['user_id'=>$row->id]);
+			if($roles)
+				$data['result'][$key]->roles = array_column($roles, 'role');
+		}
 	}
 
 	return $data;
 });
+
+

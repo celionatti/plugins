@@ -4,9 +4,12 @@ namespace Core;
 
 defined('ROOT') or die("Direct script access denied");
 
+/**
+ * Session class
+ */
 class Session
 {
-    private $varKey = 'APP';
+	private $varKey = 'APP';
 	private $userKey = 'USER';
 
 	private function startSession():int
@@ -150,4 +153,5 @@ class Session
 
 		return null;
 	}
+	
 }
