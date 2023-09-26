@@ -1,18 +1,18 @@
 {
-	"name":"New Plugin",
+	"name":"User Roles",
 	"version":"1.0.0",
-	"id":"new-plugin",
-	"author":"",
+	"id":"user-roles",
+	"author":"celio natti",
 	"author website":"",
 	"thumbnail":"thumbnail.jpg",
 	"active":true,
-	"index":1,
+	"index":4,
 	"routes": {
-		"on":["all"],
+		"on":["admin"],
 		"off":[]
 	},
 	"dependencies": {
-
+		"basic-auth":"1.0.0"
 	}
 
 }

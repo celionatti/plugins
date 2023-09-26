@@ -222,8 +222,9 @@ class Thunder
 				require_once $file;
 
 				$class_name = basename($file);
-				preg_match("/[a-zA-Z]+\.php$/", $class_name, $match);
+				preg_match("/[a-zA-Z_]+\.php$/", $class_name, $match);
 				$class_name = ucfirst(str_replace(".php", "", $match[0]));
+				$class_name = trim($class_name,'_');
 
 				$myclass = new ("\Migration\\$class_name");
 
@@ -254,9 +255,10 @@ class Thunder
 						require_once $file;
 
 						$class_name = basename($file);
-						preg_match("/[a-zA-Z]+\.php$/", $class_name, $match);
+						preg_match("/[a-zA-Z_]+\.php$/", $class_name, $match);
 						$class_name = ucfirst(str_replace(".php", "", $match[0]));
-
+						$class_name = trim($class_name,'_');
+						
 						$myclass = new ("\Migration\\$class_name");
 
 						if($action == 'migrate')

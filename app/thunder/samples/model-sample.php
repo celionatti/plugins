@@ -1,6 +1,7 @@
 <?php
 
 namespace {NAMESPACE};
+use \Model\Model;
 
 defined('ROOT') or die("Direct script access denied");
 

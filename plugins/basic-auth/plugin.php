@@ -25,6 +25,15 @@ set_value([
 
 ]);
 
+/** check if all tables exist **/
+$db = new \Core\Database;
+$tables = get_value()['tables'];
+
+if(!$db->table_exists($tables)){
+	dd("Missing database tables in ".plugin_id() ." plugin: ". implode(",", $tables));
+	die;
+}
+
 /** run this after a form submit **/
 add_action('controller',function(){
 
@@ -46,7 +55,42 @@ add_action('controller',function(){
 });
 
 
-/** add menu links **/
+/** set permissions for current user **/
+add_filter('user_permissions',function($permissions){
+
+	$ses = new \Core\Session;
+
+	if($ses->is_logged_in())
+	{
+
+		$vars = get_value();
+		$db = new \Core\Database;
+
+		$query = "select * from " . $vars['optional_tables']['roles_table'];
+		$roles = $db->query($query);
+
+		if(is_array($roles))
+		{
+			$user_id = $ses->user('id');
+			$query = "select permission from " .$vars['optional_tables']['permissions_table']. " 
+			 where disabled = 0 && role_id in 
+			(select role_id from " .$vars['optional_tables']['roles_map_table']. "
+			 where disabled = 0 && user_id = :user_id)";
+			 
+			$perms = $db->query($query,['user_id'=>$user_id]);
+			if($perms)
+			 	$permissions = array_column($perms, 'permission');
+
+		}else{
+			$permissions[] = 'all';
+		}
+
+	}
+
+	return $permissions;
+});
+
+
 add_filter('header-footer_before_menu_links',function($links){
 
 	$ses = new \Core\Session;
@@ -61,7 +105,7 @@ add_filter('header-footer_before_menu_links',function($links){
     $links[] = $link;
 
     $link        = (object)[];
-    $link->id    = 1;
+    $link->id    = 0;
     $link->title = 'Signup';
     $link->slug  = 'signup';
     $link->icon  = '';
@@ -69,7 +113,7 @@ add_filter('header-footer_before_menu_links',function($links){
     $links[] = $link;
 
     $link        = (object)[];
-    $link->id    = 2;
+    $link->id    = 0;
     $link->title = 'Admin';
     $link->slug  = $vars['admin_plugin_route'];
     $link->icon  = '';
@@ -77,7 +121,7 @@ add_filter('header-footer_before_menu_links',function($links){
     $links[] = $link;
 
     $link        = (object)[];
-    $link->id    = 3;
+    $link->id    = 0;
     $link->title = 'Logout';
     $link->slug  = 'logout';
     $link->icon  = '';
@@ -85,7 +129,7 @@ add_filter('header-footer_before_menu_links',function($links){
     $links[] = $link;
 
     $link        = (object)[];
-    $link->id    = 4;
+    $link->id    = 0;
     $link->title = 'Hi, ' . $ses->user('first_name');
     $link->slug  = 'profile/'. $ses->user('id');
     $link->icon  = '';
@@ -102,14 +146,14 @@ add_action('view',function(){
 
 	$vars = get_value();
 
-	if(page() == $vars['login_page']) {
+	if(page() == $vars['login_page']){
+		
 		require plugin_path('views/login.php');
-	} else {
-		if(page() == $vars['signup_page']) {
-			$errors = $vars['errors'] ?? [];
-			
-			require plugin_path('views/signup.php');
-		}
+	}else
+	if(page() == $vars['signup_page'])
+	{
+		$errors = $vars['errors'] ?? [];
+		require plugin_path('views/signup.php');
 	}
 
 });

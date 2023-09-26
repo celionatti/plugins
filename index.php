@@ -36,7 +36,7 @@ $USER_DATA = [];
     die("<center><h1 style='font-family:tahoma;margin-top:15px;'>No plugins were found!, Please put atleast one plugin in the Plugins folder</h1></center>");
     
 
-$APP['permissions'] = do_filter('user_permissions',$APP['permissions']);
+$APP['permissions'] = do_filter('permissions',$APP['permissions']);
 
 $app = new \Core\App();
 $app->index();
