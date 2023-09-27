@@ -300,7 +300,7 @@
 </style>
 <nav>
 	<div class="wrapper">
-		<div class="logo"><a href="#">Logo</a></div>
+		<div class="logo"><a href="#">CNB</a></div>
 		<input type="radio" name="slider" id="menu-btn">
 		<input type="radio" name="slider" id="close-btn">
 		<ul class="menu-nav-links" style="margin-top: 1rem;">
