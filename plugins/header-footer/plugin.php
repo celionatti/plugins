@@ -1,17 +1,16 @@
 <?php
 
 /**
- * Plugin name: Header Footer
+ * Plugin name: Header footer
  * Author: Celio natti
- * Description: Plugin created for fun.
- * 
+ * Description: Plugin Created for thunder php 
  * 
  **/
 
-
 /** displays the view file **/
 add_action('before_view',function(){
-	$links = [];
+
+    $links = [];
     
     $link        = (object)[];
     $link->id    = 0;
@@ -22,7 +21,7 @@ add_action('before_view',function(){
     $links[] = $link;
 
     $links = do_filter(plugin_id().'_before_menu_links',$links);
-	
+    
 	require plugin_path('views/header.php');
 });
 
