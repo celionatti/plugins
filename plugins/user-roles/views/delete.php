@@ -10,28 +10,15 @@
 
             <h4 class="">Delete Record</h4>
             <div class="alert alert-danger text-center">Are you sure you want to delete this record?!</div>
-            <label class="text-center">
-                <img src="<?=get_image($row->image)?>" class="img-thumbnail" style="width:100%;max-width:200px;max-height: 200px;object-fit: cover;">
-            </label>
 
             <div class="mb-3 col-md-6">
-              <label for="first_name" class="form-label">First Name</label>
-              <div class="form-control"><?=esc($row->first_name)?></div>
+              <label for="role" class="form-label">Role</label>
+              <div class="form-control"><?=esc($row->role)?></div>
             </div>
 
             <div class="mb-3 col-md-6">
-              <label for="last_name" class="form-label">Last Name</label>
-              <div class="form-control"><?=esc($row->last_name)?></div>
-            </div>
-            
-            <div class="mb-3 col-md-6">
-              <label for="email" class="form-label">Email</label>
-              <div class="form-control"><?=esc($row->email)?></div>
-            </div>
-
-            <div class="mb-3 col-md-6">
-                <label for="email" class="form-label">Gender</label>
-                <div class="form-control"><?=esc('gender','male',$row->gender)?></div>
+                <label for="email" class="form-label">Active</label>
+                <div class="form-control"><?=esc($row->disabled ? 'No':'Yes')?></div>
             </div>
  
             <div class="d-flex justify-content-between">
