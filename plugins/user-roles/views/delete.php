@@ -1,4 +1,4 @@
-<?php if(user_can('delete_user')):?>
+<?php if(user_can('delete_role')):?>
 
 <?php if(!empty($row)):?>
 

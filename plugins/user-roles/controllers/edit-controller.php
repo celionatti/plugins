@@ -9,7 +9,7 @@ if(!empty($row))
  
 	if($csrf && $user_role->validate_update($postdata))
 	{
-		if(user_can('edit_user'))
+		if(user_can('edit_role'))
 		{
  
 			unset($postdata['id']);

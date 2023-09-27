@@ -1,6 +1,16 @@
 <?php if(user_can('view_users')):?>
 
 <div class="table-responsive">
+
+	<label><i>Page: <?=$pager->page_number?></i></label>
+
+	<form class="input-group my-3 mx-auto" >
+	  <input placeholder="Search by Name" type="text" class="form-control" value="<?=old_value('find','','get')?>" name="find" autofocus="true">
+	  <button class="input-group-text bg-primary text-white" id="basic-addon1">
+	  	Search
+	  </button>
+	</form>
+
 	<table class="table table-striped table-bordered">
 		<tr>
 			<th>#</th>
@@ -78,6 +88,9 @@
 			<?php endforeach?>
 		<?php endif?>
 	</table>
+
+	<?=$pager->display()?>
+
 </div>
 <?php else:?>
 	<div class="alert alert-danger text-center">
