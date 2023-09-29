@@ -1,5 +1,6 @@
 <?php
 
+use Core\Image;
 
 function set_value(string|array $key, mixed $value = ''):bool
 {
@@ -510,6 +511,13 @@ function get_image(?string $path = '', string $type = 'post')
 		return ROOT . '/assets/images/user_female.jpg';
 
 	return ROOT . '/assets/images/no_image.jpg';
+}
+
+function getThumbnail(string $filename, $width = 700, $height = 700)
+{
+	$image = new Image();
+
+	$image->getThumbnail($filename, $width, $height);
 }
 
 function esc(?string $str):?string
